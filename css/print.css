@@ -1,0 +1,33 @@
+@media print 
+{
+   @page
+   {
+    size: A4;
+    size: portrait;
+    margin: 0;
+  }
+}
+html,body{
+    font: 10pt "tahoma";
+    box-sizing: border-box; 
+    border: none;
+}
+
+#btn-prnt-prev,
+.btn-gb,
+.prnt-prvw,
+aside{
+    display: none;
+}
+hr{
+    border: none;
+}
+.header-title h1:nth-child(2){
+    margin-top: -5px;
+}
+table thead th{
+    color: #000;
+}
+.hide-in-print{
+    display: none;
+}

@@ -1,0 +1,36 @@
+@media print 
+{
+   @page
+   {
+    size: 14in 8.5in;
+    size: landscape;
+    margin: 1in;
+  }
+}
+html,body{
+    font: 10pt "tahoma";
+    box-sizing: border-box; 
+    border: none;
+}
+
+#btn-prnt-prev,
+.btn-gb,
+.prnt-prvw,
+aside{
+    display: none;
+}
+hr{
+    border: none;
+}
+.header-title h1:nth-child(2){
+    margin-top: -5px;
+}
+table thead th{
+    color: #000;
+}
+.rpm-wrapper{
+    margin-left: 70px;
+}
+.container-srch{
+    display:none;
+}

@@ -1,0 +1,110 @@
+html,body{
+    font-size: 10px;
+}
+.lblbar{
+    display: none;
+}
+.lblbar span{
+    display: none;
+}
+.header-title h1{
+    font-size: 1.3rem;
+}
+.header-title h1:nth-child(2){
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+hr{
+    margin-top: 1.4rem;
+}
+.content{
+    /* overflow: hidden !important; */
+}
+.content-wrapper{
+    padding-left: 25px;
+}
+.rpdriver-wrapper,
+.rpplate-wrapper{
+    width: 930px;
+}
+.rpdriver-container table th,
+.rpplate-container table th,
+.rpm-container table th,
+.rpall-container table th,
+.rptruckexpense-container table th,
+.rptruckmaintenance-container table th
+{
+    background-color: #fff !important;
+    color: #000 !important;
+}
+.rpdriver-container table td,
+.rpplate-container table td,
+.rptruckexpense-container table td,
+.rptruckmaintenance-container table td,
+.rpm-container table td,
+.rpall-container table td{
+    padding: 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.rpdriver-wrapper .container-button h4 b,
+.rpplate-wrapper .container-button h4 b,
+.rptruckexpense-wrapper .container-button h4 b,
+.rptruckmaintenance-wrapper .container-button h4 b
+{
+    font-size: 1.5rem !important;
+}
+.rpall-wrapper{
+	width: 800px;
+}
+.rpall-container table{
+	width: auto !important;
+    margin: 0;
+    margin-bottom: 200px;
+}
+.rpall-container table th:nth-child(1){
+	width: 30px !important;
+}
+.rpall-container table th:nth-child(2){
+	width: 100px !important;
+}
+.rpall-container table th:nth-child(3){
+	width: 400px !important;
+}
+.rpall-container table th:nth-child(4){
+	width: 120px !important;
+}
+.rpall-container table th:nth-child(5){
+	width: 140px !important;
+}
+.rpall-container table th:nth-child(6){
+	width: 80px !important;
+}
+.rpall-container table tr:nth-child(even){
+	background-color: white !important;
+    color: black;
+}
+.rpall-container table tr:nth-child(even):hover{
+	background-color: blue !important;
+    color: white;
+}
+.pages-tr:hover td{
+    background-color: white !important;
+    color: rgb(59, 59, 199) !important;
+}
+.rpplate-container table tr:nth-child(even){
+    background-color: #fff;
+    color: black;
+}
+.rptruckexpense-container table tr:nth-child(even),
+.rptruckmaintenance-container table tr:nth-child(even),
+.rpdriver-container table tr:nth-child(even)
+{   
+    background-color: #fff;
+    color: black;
+}
+.payable-cont-right table th,
+.payable-cont-right table tr:nth-child(even){
+    background-color: #fff !important;
+    color: black !important;
+}

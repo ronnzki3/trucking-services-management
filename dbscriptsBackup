@@ -1,0 +1,181 @@
+create table driver(
+	ID int not null AUTO_INCREMENT,
+    driver varchar(255) not null,
+    is_active int not null DEFAULT 1,
+    PRIMARY KEY(ID)
+)
+
+
+create table plate(
+	ID int not null AUTO_INCREMENT,
+    plate varchar(255) not null,
+    is_active int not null DEFAULT 1,
+    PRIMARY KEY(ID)
+)
+
+
+
+CREATE TABLE destination(
+	ID int not null AUTO_INCREMENT,
+    destination varchar(255) not null,
+    areacode text not null,
+    destination_rate varchar(30) not null,
+    destination_distance varchar(30) not null,
+    is_active int not null DEFAULT 1,
+    PRIMARY KEY (ID)
+)
+
+
+create table dailytrip(
+	ID int not null AUTO_INCREMENT,
+    tripdate date not null,
+    driverid int not null,
+    destinationid int not null,
+    plateid int not null,
+    rateamount float not null,
+    diesel float not null,
+    other_expense float not null,
+    expense_remarks text not null,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (driverid) REFERENCES driver(ID),
+    FOREIGN KEY (destinationid) REFERENCES destination(ID),
+    FOREIGN KEY (plateid) REFERENCES plate(ID)
+);
+
+
+
+CREATE TABLE ca(
+	ID int NOT NULL AUTO_INCREMENT,
+    ca_date date not null,
+    driverid int not null,
+    amount float not null,
+    remarks text not null,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (driverid) REFERENCES driver(ID)    
+)
+
+
+CREATE TABLE payroll(
+	ID int NOT NULL AUTO_INCREMENT,
+    ca_date date not null,
+    driverid int not null,
+    amount float not null,
+    remarks text not null,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (driverid) REFERENCES driver(ID)    
+)
+
+
+create table maintenance (
+	ID int not null AUTO_INCREMENT,
+    transactiondate date not null,
+    plateid int not null,
+    amount int not null,
+    remarks text not null,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (plateid) REFERENCES plate(ID)
+)
+
+
+
+
+CREATE VIEW vwdailytrip AS
+SELECT
+ID,tripdate,
+(SELECT driver FROM driver WHERE ID=dailytrip.driverid) as driver,
+(SELECT destination FROm destination WHERE ID=dailytrip.destinationid) as destination,
+(SELECT areacode FROm destination WHERE ID=dailytrip.destinationid) as areacode,
+(SELECT destination_distance FROm destination WHERE ID=dailytrip.destinationid) as destination_distance,
+(SELECT plate FROM plate WHERE ID=dailytrip.plateid) as plate,
+rateamount,diesel,other_expense,expense_remarks
+FROM
+dailytrip
+
+
+
+CREATE VIEW vwdailytripall AS
+SELECT
+ID,tripdate,driverid,destinationid,plateid,
+(SELECT driver FROM driver WHERE ID=dailytrip.driverid) as driver,
+(SELECT destination FROm destination WHERE ID=dailytrip.destinationid) as destination,
+(SELECT destination_distance FROm destination WHERE ID=dailytrip.destinationid) as destination_distance,
+(SELECT areacode FROm destination WHERE ID=dailytrip.destinationid) as areacode,
+(SELECT plate FROM plate WHERE ID=dailytrip.plateid) as plate,
+rateamount,diesel,(SELECT destination_rate FROM destination WHERE ID=dailytrip.destinationid) as destination_rate,
+other_expense,expense_remarks,(IFNULL(diesel,0) + IFNULL(other_expense,0))  as totalexpenses
+FROM
+dailytrip
+
+
+
+CREATE VIEW vwca AS
+SELECT ID,driverid,
+ca_date,
+(SELECT driver FROM driver WHERE ID=ca.driverid) AS driver,
+amount,remarks
+FROM ca
+
+
+CREATE VIEW vwcasum AS
+SELECT
+ca_date,driverid,
+(SELECT driver FROM driver WHERE ID=ca.driverid) AS driver,
+SUM(amount) as amount
+FROM ca 
+GROUP BY ca_date,driver,driverid
+
+
+CREATE VIEW vwdailytripallrpt AS
+SELECT v.tripdate,v.driverid,v.destinationid,v.plateid,v.driver,v.destination,v.areacode,v.plate,v.rateamount,v.diesel,c.amount,c.remarks FROM vwdailytripall v
+LEFT JOIN ca c ON v.tripdate=c.ca_date AND v.driverid=c.driverid
+UNION ALL
+SELECT ca_date as tripdate,driverid,'' as destinationid,'' as plateid,'' as driver,'' as destination,'' as areacode,'' as plate,'' as rateamount,'' as diesel,amount,remarks FROM ca
+Where ca_date NOT IN (select tripdate from vwdailytripall);
+
+
+
+
+create table company(
+	ID int not null AUTO_INCREMENT,
+    company varchar(255) not null,
+    PRIMARY KEY (ID)
+)
+
+
+create table payables(
+	ID int not null AUTO_INCREMENT,
+    companyid int not null,
+    payable_date date not null,
+    particulars text not null,
+    debit int not null,
+    credit int not null,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (companyid) REFERENCES company(ID)
+)
+
+
+CREATE TABLE login (
+	ID int not null AUTO_INCREMENT,
+    username varchar(255) not null,
+    userpassword varchar(255) not null,
+    PRIMARY KEY (ID)
+)
+
+
+
+CREATE VIEW vwpayables AS
+SELECT * FROM payables
+
+
+CREATE VIEW vwmaintenance AS
+SELECT *,(SELECT plate from plate where ID=maintenance.plateid) as plate FROM maintenance
+
+
+
+CREATE VIEW vwpayables_w_balance AS
+SELECT ID,companyid,payable_date,particulars,IFNULL(debit,0) as debit,IFNULL(credit,0) as credit,
+(SELECT SUM(IFNULL(credit,0)) as total FROM payables WHERE payable_date<=vwpayables.payable_date AND companyid=vwpayables.companyid GROUP BY companyid) -
+(SELECT SUM(IFNULL(debit,0)) as totald FROM payables WHERE payable_date<=vwpayables.payable_date AND companyid=vwpayables.companyid GROUP BY companyid) as balance
+FROM vwpayables
+
+
